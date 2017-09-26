@@ -1,0 +1,30 @@
+{
+  "name": "canvas-syncing-assignment-part3",
+  "version": "1.0.0",
+  "description": "a simple app that shows updated movement",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siuster95/canvas-syncing-assignment-part3.git"
+  },
+  "author": "Johnny Siu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/siuster95/canvas-syncing-assignment-part3/issues"
+  },
+  "homepage": "https://github.com/siuster95/canvas-syncing-assignment-part3#readme",
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  },
+  "dependencies": {
+    "socket.io": "^2.0.3",
+    "socketio": "^1.0.0"
+  }
+}

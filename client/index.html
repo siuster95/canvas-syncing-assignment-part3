@@ -1,13 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
     <script type="text/babel" >
         "use strict";
     
+        let canvas;
+        
+        let socket;
+        
+        let ctx;
+
+        let draws = {};
+
+        const user = Math.floor(Math.random() * 1000);
+
+        const init = () => {
+            canvas = document.querySelector("#myCanvas");
+            ctx = canvas.getContext("2d");
+            
+            socket = io.connect();
+            
+            setup();
+            
+            //grab from the server and draw
+            socket.on('updateFromserver', (data) => {
+               if(!draws[data.user])
+               {
+                    draws[data.user] = data.info;   
+               }
+               else if(data.info.lastUpdatetime > draws[data.user].lastUpdatetime)
+               {
+                   console.dir("here");
+                   draws[data.user] = data.info;
+               }
+               draw();
+                
+                });
+                
+            //interval
+            setInterval(() => {
+                update();
+                draw();
+            },1000);
+                
+            
+            
+        };
+
+
+        //set up a random position and put it in the list
+        const setup = () => {
+          const time = new Date().getTime();
+          let x = Math.floor(Math.random()*500);
+          let y = Math.floor(Math.random()*500-50);
+          draws[user] = {lastUpdatetime:time,x:x,y:y,width:100,height:100};
+          console.log("setup complete")
+        };
+
+        //emit a new position for the square
+        const update = () => {
+            const time = new Date().getTime();
+            draws[user].lastUpdatetime = time;
+            draws[user].x += 10;
+            socket.emit('updatePosition',{user:user,info:draws[user]});
+            //console.log("updating");
+        };
+
+        //draw
+        const draw = () => {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            
+            const keys = Object.keys(draws);
+            
+            for(let i =0; i<keys.length;i++)
+            {
+                let drawCall = draws[keys[i]];
+                ctx.fillStyle = "red";
+                ctx.fillRect(drawCall.x,drawCall.y,drawCall.width,drawCall.height);
+                console.log(drawCall.x);
+            }
+        };
+
+        
+
+
+
+        window.onload = init;
     </script>
 </head>
 <body>
-
+<canvas id="myCanvas" width="500" height="500"style="border:1px solid #000000;"></canvas>
 </body>
 </html>
